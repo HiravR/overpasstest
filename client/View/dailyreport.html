@@ -1,0 +1,125 @@
+<!-- Created By Hirav Raval
+Last Edited by : Hirav Raval
+When: 5/8/2017
+Reason: Found an issue while loading the data. It was taking a long time to load the data. So now initially displaying only 150 and than keeping ading 150.
+ -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Daily Report - XYZ Parking Garage</title>
+
+        <!-- external CSS link -->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800,600,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/style.css"> 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="jumbotron"> <p>
+        Welcome to XYZ Parking System. Use the menu for navigation.
+</p></div>
+<nav class="navbar navbar-inverse" role="navigation" style="padding-left:130px;">
+       <ul class="nav navbar-nav">
+      <li><a href="/">Home<span class="sr-only">(current)</span></a></li>
+      <li class="active"><a href="/dailyreport">Daily report</a></li>
+    </ul>
+</nav>
+    <div id="parkingDisplay" class="container">
+    <div class="row tableHead">
+        <div class="col-md-2">License</div>
+        <div class="col-md-2">price</div>
+        <div class="col-md-2">duration</div>
+        <div class="col-md-3">in</div>
+        <div class="col-md-3">out</div>
+    </div>
+    </div>
+    <div class="row">
+       <div class="col-md-4"></div> <div class="col-md-2">Total:<span  id="totalcars"> </span></div><div class="col-md-2"> Remaining:<span id="loadRemaining"> </span></div>
+    </div>
+    <button style="" data-start="" data-end="" onclick="javascript:displayData();" id="displayDataButton">Load Next 150</button>
+        <button style="display:none;" data-start="" data-end="" onclick="javascript:getJson('http://localhost:4200/api/event');" id="loadDataButton"></button>
+        <script type="text/javascript" src="lib/jsDict.js"></script>
+        <script src="js/app.js"></script>
+        
+        <script type="text/javascript">
+        //Input: URL  Output: data in dictionary
+        var getButton = document.getElementById("displayDataButton");
+       getJson("http://localhost:4200/api/event");
+       var dataLength ; 
+       
+        //disply it in decending order
+        window.onload = function (e){  
+        dataLength = parking_data.Keys.length;                
+                if(dataLength == 0 || dataLength =='' ||dataLength==null){                           
+                    console.log('data not found');                   
+                    document.getElementById("loadDataButton").click();
+                  console.log('event dispatched');
+                }
+                document.getElementById("totalcars").innerHTML = dataLength;
+                    document.getElementById("loadRemaining").innerHTML = dataLength -150;                    
+                   displayData(); 
+
+    }
+  
+    function displayData(){       
+      var runLoopUpto;
+        if(dataLength > 0){            
+            if(getButton.dataset.start != null && getButton.dataset.start !='' ){
+                dataLength = getButton.dataset.start;
+            }
+            if(dataLength > 150){
+                 runLoopUpto = dataLength -150;
+            }else{
+                runLoopUpto -= dataLength;
+            }           
+            for(var i=dataLength; i >=runLoopUpto ;i--){ 
+                  if(parking_data.getVal(parking_data.Keys[i]).in >0){                       
+                                inDate = jsonGetDate(parking_data.getVal(parking_data.Keys[i]).in);                         
+                                outDate = jsonGetDate(parking_data.getVal(parking_data.Keys[i]).out);
+                                //conditioin to check if we vehicle has lef the parking already or not. if not then get the duration with current time.
+                                if(outDate != null || outDate != 0){
+                                duration = getDuration(parking_data.getVal(parking_data.Keys[i]).in,parking_data.getVal(parking_data.Keys[i]).out);
+                                }else{
+                                    var currentTime = new Date();
+                                    //this will get us the time in miliseconds.
+                                    currentTime = currentTime.getTime();
+                                   duration= getDuration(parking_data.getVal(parking_data.Keys[i]).in,currentTime); 
+                                }             
+                                
+                                //check duration timings. 
+                                if(duration > 1){
+                                    textHTML +="<div class='row'><div class='col-md-2'>"+parking_data.Keys[i]+"</div>";
+                                    price = getPrice(duration);
+                                    textHTML +="<div class='col-md-2'>"+price+"</div>";
+                                }else if(duration > 24){
+                                    textHTML +="<div class='row redZone'><div class='col-md-2'>"+parking_data.Keys[i]+"</div>";
+                                    price = getPrice(duration);
+                                    textHTML +="<div class='col-md-2'>"+price+"</div>";
+
+                                }else{
+                                    textHTML +="<div class='row noCharge'><div class='col-md-2'>"+parking_data.Keys[i]+"</div>";
+                                    price = 0;
+                                    textHTML +="<div class='col-md-2'>"+price+"</div>";
+                                }                           
+                                textHTML +="<div class='col-md-2'>"+duration+"</div>";
+                                textHTML +="<div class='col-md-3'>"+inDate+"</div>";
+                                textHTML +="<div class='col-md-3'>"+outDate+"</div></div>";
+                              
+                            }   
+
+            }        
+            document.getElementById("parkingDisplay").innerHTML += textHTML; 
+           dataLength = runLoopUpto;
+            document.getElementById("loadRemaining").innerHTML = dataLength;
+            getButton.dataset.start = dataLength;
+        }else{
+            document.getElementById("displayDataButton").disable= true;            
+        }
+  }   
+  </script>
+        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js"></' + 'script>')</script>
+        <footer>
+          <p>Developed by: Hirav Raval. &copy; Copyright by Hirav Raval 2017.</p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,33 @@
+/**********************
+Architecture
+**********************/
+
+3 seperate javascripts. 1) for GUI 2) Library file and 3) process the data.
+
+GUI is seperated from the data.(dailyreport.html)
+data as been stored in to the dictionary  object using app.js file
+
+jsDict.js file to created a  new dictionay object. which has some basic methods. like add, update , remove. 
+
+
+/**********************
+Process
+**********************/
+When dailyreport.html page is being loaded it call the getJson Function and pass the URL paramater to it.
+
+getJson function fetch the data asynchronously. When packet arrives it makes a function call(assignData) and release the data. assignData function sort the data and process it and sotre it in to the dictionary object.
+
+Now we check the if dictionary is empty or not. If it is empty, than make a evencall and load the data into it. 
+
+Next call the displayData fucntion to display the data on GUI. 
+
+
+
+/**********************
+Improvements
+**********************/
+
+Dynamically loading the dictioary data. e.g. display first 150 entry when scroll reaches bottom load another 150 an on. 
+
+
+

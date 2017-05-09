@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Parking Garage</title>
+
+		<!-- external CSS link -->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800,600,300' rel='stylesheet' type='text/css'>
+	 	<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/style.css"> 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	</head>
+	<body>
+		<div class="jumbotron">
+		 	<p>Welcome to XYZ Parking System. Use the menu for navigation.</p>
+		 </div>
+<nav class="navbar navbar-inverse" role="navigation" style="padding-left:130px;">
+       <ul class="nav navbar-nav">
+	      <li class="active"><a href="/">Home<span class="sr-only">(current)</span></a></li>
+	      <li><a href="/dailyreport">Daily report</a></li>
+    	</ul>
+</nav>
+	<div id="parkingDisplayIndex" class="container">
+		<h1>Show your content here</h1>
+		<button class="btn btn-primary" id="dailyReport" onclick="window.location.href='/dailyreport';getJson('http://localhost:4200/api/event');">Click Me for a Daily Report!</button>
+	</div>
+		<script type="text/javascript" src="lib/jsDict.js"></script>
+		<script src="js/app.js"></script>
+		
+		<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js"></' + 'script>')</script>
+		        <footer>
+          <p>Developed by: Hirav Raval. &copy; Copyright by Hirav Raval 2017.</p>
+        </footer>
+	</body>
+</html>
